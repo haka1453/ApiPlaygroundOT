@@ -1,6 +1,10 @@
 package tests;
 
+import com.aventstack.extentreports.Status;
+import groovy.transform.ToString;
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import request.RequestFactory;
@@ -19,12 +23,18 @@ public class ProductTest extends BaseTest {
     }
 
     @Test
-    public void verifyGetRequest() {
-        requestFactory.getAllProducts().then().log().all().statusCode(200);
+    public void verifyGetProduct() {
+        extentReport.createTestcase("Verify Get Product");
+        // ValidatableResponse valResponse = requestFactory.getAllProducts().then();
+        Response response = requestFactory.getAllProducts();
+        // extentReport.addLog(Status.INFO, valResponse.log().all().toString());
+        extentReport.addLog(String.valueOf(Status.INFO), response.asPrettyString());
+        response.then().statusCode(200);
     }
 
     @Test
     public void verifyAddProduct(String requestPayload) {
+        extentReport.createTestcase("Verify Add Product");
         requestPayload = "{\n" +
                 "  \"name\": \"Samsung Mobile\",\n" +
                 "  \"type\": \"Mobile\",\n" +
@@ -42,6 +52,7 @@ public class ProductTest extends BaseTest {
 
     @Test
     public void verifyAddProductWithRequestPayloadAsMap() {
+        extentReport.createTestcase("Verify Add Product With Request Payload As Map");
         Map<String, Object> requestPayload = new HashMap<>();
         requestPayload.put("type", "Mobile");
         requestPayload.put("price", 100);
